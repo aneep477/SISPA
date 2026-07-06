@@ -1,72 +1,47 @@
 <!DOCTYPE html>
-<html>
+<html lang="ms">
 <head>
-  <base target="_top">
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sistem Permarkahan Perkhemahan Kor SISPA</title>
   <style>
     :root{
       --navy:#0f2c52; --navy2:#163a6b; --gold:#c9a227; --green:#1e7a4c;
       --red:#b0362c; --gray:#f2f4f7; --border:#dde3ec;
     }
     *{box-sizing:border-box;}
-    body{
-      font-family:'Segoe UI', Arial, sans-serif; margin:0; background:var(--gray); color:#1b2430;
-    }
-    header{
-      background:linear-gradient(135deg,var(--navy),var(--navy2)); color:#fff; padding:18px 20px;
-      text-align:center;
-    }
+    body{ font-family:'Segoe UI', Arial, sans-serif; margin:0; background:var(--gray); color:#1b2430; }
+    header{ background:linear-gradient(135deg,var(--navy),var(--navy2)); color:#fff; padding:18px 20px; text-align:center; }
     header h1{margin:0; font-size:18px; letter-spacing:.3px;}
     header p{margin:4px 0 0; font-size:12px; opacity:.85;}
     .tabs{display:flex; background:#fff; border-bottom:1px solid var(--border);}
-    .tab{
-      flex:1; text-align:center; padding:14px 8px; font-size:14px; font-weight:600; color:#667;
-      cursor:pointer; border-bottom:3px solid transparent;
-    }
+    .tab{ flex:1; text-align:center; padding:14px 8px; font-size:14px; font-weight:600; color:#667; cursor:pointer; border-bottom:3px solid transparent; }
     .tab.active{color:var(--navy); border-bottom-color:var(--gold);}
     .screen{display:none; padding:16px; max-width:520px; margin:0 auto;}
     .screen.active{display:block;}
-    .card{
-      background:#fff; border-radius:14px; padding:18px; margin-bottom:14px;
-      box-shadow:0 1px 3px rgba(0,0,0,.06); border:1px solid var(--border);
-    }
+    .card{ background:#fff; border-radius:14px; padding:18px; margin-bottom:14px; box-shadow:0 1px 3px rgba(0,0,0,.06); border:1px solid var(--border); }
     .card h2{margin:0 0 12px; font-size:15px; color:var(--navy);}
     label{display:block; font-size:12px; font-weight:600; color:#556; margin-bottom:5px;}
     input[type=text], input[type=password], select{
       width:100%; padding:11px 12px; border:1px solid var(--border); border-radius:8px;
       font-size:15px; margin-bottom:12px; background:#fbfcfe;
     }
-    button.primary{
-      width:100%; padding:13px; border:none; border-radius:8px; background:var(--navy);
-      color:#fff; font-size:15px; font-weight:600; cursor:pointer;
-    }
+    button.primary{ width:100%; padding:13px; border:none; border-radius:8px; background:var(--navy); color:#fff; font-size:15px; font-weight:600; cursor:pointer; }
     button.primary:disabled{opacity:.5;}
-    button.secondary{
-      width:100%; padding:11px; border:1px solid var(--navy); border-radius:8px; background:#fff;
-      color:var(--navy); font-size:14px; font-weight:600; cursor:pointer; margin-top:8px;
-    }
+    button.secondary{ width:100%; padding:11px; border:1px solid var(--navy); border-radius:8px; background:#fff; color:var(--navy); font-size:14px; font-weight:600; cursor:pointer; margin-top:8px; }
     .msg{padding:10px 12px; border-radius:8px; font-size:13px; margin-bottom:12px;}
     .msg.ok{background:#e5f4ec; color:var(--green); border:1px solid #bfe3cf;}
     .msg.err{background:#fbe9e7; color:var(--red); border:1px solid #f1c3bd;}
-    .photo-preview{
-      width:140px; height:140px; border-radius:12px; object-fit:cover; display:block;
-      margin:0 auto 14px; border:2px solid var(--border); background:#eee;
-    }
+    .photo-preview{ width:140px; height:140px; border-radius:12px; object-fit:cover; display:block; margin:0 auto 14px; border:2px solid var(--border); background:#eee; }
     .student-name{text-align:center; font-weight:700; font-size:16px; color:var(--navy); margin-bottom:2px;}
     .student-meta{text-align:center; font-size:12px; color:#778; margin-bottom:14px;}
     .test-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px;}
-    .test-btn{
-      padding:16px 8px; text-align:center; border-radius:10px; border:1px solid var(--border);
-      background:#fff; font-size:13px; font-weight:700; color:var(--navy); cursor:pointer;
-    }
+    .test-btn{ padding:16px 8px; text-align:center; border-radius:10px; border:1px solid var(--border); background:#fff; font-size:13px; font-weight:700; color:var(--navy); cursor:pointer; }
     .test-btn.selected{background:var(--navy); color:#fff;}
     .tick-group{margin-bottom:16px;}
     .tick-group .lbl{font-size:13px; font-weight:700; color:#334; margin-bottom:8px;}
     .tick-row{display:flex; gap:6px;}
-    .tick-btn{
-      flex:1; padding:14px 0; text-align:center; border-radius:8px; border:1px solid var(--border);
-      background:#fbfcfe; font-size:16px; font-weight:700; color:#556; cursor:pointer;
-    }
+    .tick-btn{ flex:1; padding:14px 0; text-align:center; border-radius:8px; border:1px solid var(--border); background:#fbfcfe; font-size:16px; font-weight:700; color:#556; cursor:pointer; }
     .tick-btn.selected{background:var(--gold); color:#1b2430; border-color:var(--gold);}
     select#studentSelect{margin-bottom:14px;}
     table.dash{width:100%; border-collapse:collapse; font-size:11px;}
@@ -75,13 +50,9 @@
     table.dash td.name{text-align:left; font-weight:600;}
     .dot{width:14px; height:14px; border-radius:50%; display:inline-block;}
     .dot.done{background:var(--green);} .dot.pending{background:#dde3ec;}
-    .spinner{
-      display:inline-block; width:16px; height:16px; border:2px solid #fff; border-top-color:transparent;
-      border-radius:50%; animation:spin .7s linear infinite; vertical-align:middle; margin-right:6px;
-    }
+    .spinner{ display:inline-block; width:16px; height:16px; border:2px solid #fff; border-top-color:transparent; border-radius:50%; animation:spin .7s linear infinite; vertical-align:middle; margin-right:6px; }
     @keyframes spin{to{transform:rotate(360deg);}}
     .hidden{display:none !important;}
-    .link-btn{background:none;border:none;color:var(--navy);font-size:12px;text-decoration:underline;cursor:pointer;padding:0;}
   </style>
 </head>
 <body>
@@ -174,12 +145,31 @@
 </div>
 
 <script>
+// ======= TUKAR INI kepada URL /exec deployment Apps Script anda =======
+const SCRIPT_URL = 'https://script.google.com/a/macros/ipgm.edu.my/s/AKfycbzxbBumBc79snPRMGRKdnQo10pUZfJdVfojbKJbGIgbv654F2Z8sxKLLh5nZWPg3gIE/exec';
+
 let LECTURER_PASSWORD = '';
 let currentTest = null;
 let currentStudent = null;
 let hp3Selected = null;
 let hp4Selected = null;
 let studentListCache = [];
+
+// ---------- Helper panggilan API ----------
+function apiGet(action, params){
+  params = params || {};
+  const qs = new URLSearchParams(Object.assign({action}, params)).toString();
+  return fetch(SCRIPT_URL + '?' + qs).then(r => r.json());
+}
+function apiPost(action, payload){
+  payload = Object.assign({action}, payload || {});
+  // Content-Type text/plain mengelakkan CORS preflight (Apps Script tidak sokong OPTIONS)
+  return fetch(SCRIPT_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify(payload)
+  }).then(r => r.json());
+}
 
 function showTab(tab){
   document.getElementById('tabPelajarBtn').classList.toggle('active', tab==='pelajar');
@@ -204,7 +194,7 @@ function lookupStudent(){
   const nokp = document.getElementById('pelajarNokp').value.trim();
   if(!nokp){ setMsg('pelajarMsg','Sila masukkan No. KP.', true); return; }
   setMsg('pelajarMsg','Mencari...', false);
-  google.script.run.withSuccessHandler(function(res){
+  apiGet('lookupStudentForUpload', {nokp}).then(res=>{
     if(!res.ok){ setMsg('pelajarMsg', res.message, true); return; }
     setMsg('pelajarMsg','');
     currentStudent = res.student;
@@ -214,8 +204,7 @@ function lookupStudent(){
     document.getElementById('pelajarLookupCard').classList.add('hidden');
     document.getElementById('pelajarUploadCard').classList.remove('hidden');
     setMsg('pelajarMsg2','');
-  }).withFailureHandler(function(err){ setMsg('pelajarMsg', 'Ralat: '+err.message, true); })
-  .lookupStudentForUpload(nokp);
+  }).catch(err=> setMsg('pelajarMsg', 'Ralat sambungan: '+err.message, true));
 }
 
 function resetPelajar(){
@@ -244,14 +233,15 @@ function submitPhoto(){
       document.getElementById('photoPreview').src = dataUrl;
       const btn = document.getElementById('btnUploadPhoto');
       btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>Memuat naik...';
-      google.script.run.withSuccessHandler(function(res){
-        btn.disabled = false; btn.innerText = 'Muat Naik Gambar';
-        if(!res.ok){ setMsg('pelajarMsg2', res.message, true); return; }
-        setMsg('pelajarMsg2', res.message, false);
-      }).withFailureHandler(function(err){
-        btn.disabled = false; btn.innerText = 'Muat Naik Gambar';
-        setMsg('pelajarMsg2', 'Ralat: '+err.message, true);
-      }).uploadStudentPhoto(currentStudent.nokp, dataUrl, 'image/jpeg');
+      apiPost('uploadStudentPhoto', {nokp: currentStudent.nokp, base64Data: dataUrl, mimeType: 'image/jpeg'})
+        .then(res=>{
+          btn.disabled = false; btn.innerText = 'Muat Naik Gambar';
+          if(!res.ok){ setMsg('pelajarMsg2', res.message, true); return; }
+          setMsg('pelajarMsg2', res.message, false);
+        }).catch(err=>{
+          btn.disabled = false; btn.innerText = 'Muat Naik Gambar';
+          setMsg('pelajarMsg2', 'Ralat sambungan: '+err.message, true);
+        });
     };
     img.src = e.target.result;
   };
@@ -262,26 +252,24 @@ function submitPhoto(){
 function doLogin(){
   const pw = document.getElementById('loginPassword').value;
   setMsg('loginMsg','Menyemak...', false);
-  google.script.run.withSuccessHandler(function(res){
+  apiPost('loginLecturer', {password: pw}).then(res=>{
     if(!res.ok){ setMsg('loginMsg', res.message, true); return; }
     LECTURER_PASSWORD = pw;
     document.getElementById('screenLogin').classList.remove('active');
     document.getElementById('screenDashboard').classList.add('active');
     loadDashboard();
-  }).withFailureHandler(function(err){ setMsg('loginMsg','Ralat: '+err.message, true); })
-  .loginLecturer(pw);
+  }).catch(err=> setMsg('loginMsg','Ralat sambungan: '+err.message, true));
 }
 
 // ---------- PENSYARAH: DASHBOARD ----------
 function loadDashboard(){
   setMsg('dashMsg','Memuatkan...', false);
-  google.script.run.withSuccessHandler(function(res){
+  apiGet('getDashboard', {password: LECTURER_PASSWORD}).then(res=>{
     if(!res.ok){ setMsg('dashMsg', res.message, true); return; }
     setMsg('dashMsg','');
     studentListCache = res.students;
     renderDashboard(res.students, res.tests);
-  }).withFailureHandler(function(err){ setMsg('dashMsg','Ralat: '+err.message, true); })
-  .getDashboard(LECTURER_PASSWORD);
+  }).catch(err=> setMsg('dashMsg','Ralat sambungan: '+err.message, true));
 }
 
 function renderDashboard(students, tests){
@@ -298,10 +286,6 @@ function renderDashboard(students, tests){
 }
 
 // ---------- PENSYARAH: MARKING ----------
-const TEST_LABELS = {
-  'Pertolongan Cemas':'Pertolongan\\nCemas','Melawan Kebakaran':'Melawan\\nKebakaran',
-  'Kawad Kaki':'Kawad Kaki','Istiadat':'Istiadat'
-};
 const TEST_MAX = {
   'Pertolongan Cemas':{hp3:15,hp4:10}, 'Melawan Kebakaran':{hp3:5,hp4:5},
   'Kawad Kaki':{hp3:10,hp4:5}, 'Istiadat':{hp3:5,hp4:5}
@@ -354,12 +338,12 @@ function onStudentChange(){
   setMsg('tickMsg','');
   document.getElementById('tickCard').classList.remove('hidden');
 
-  google.script.run.withSuccessHandler(function(res){
+  apiGet('getCurrentTick', {password: LECTURER_PASSWORD, testName: currentTest, nokp}).then(res=>{
     if(res.ok){
       if(res.hp3){ hp3Selected = res.hp3; buildTickRow('hp3Row','hp3'); }
       if(res.hp4){ hp4Selected = res.hp4; buildTickRow('hp4Row','hp4'); }
     }
-  }).getCurrentTick(LECTURER_PASSWORD, currentTest, nokp);
+  });
 }
 
 function buildTickRow(elId, which){
@@ -382,15 +366,18 @@ function submitTickForm(){
   if(!hp3Selected || !hp4Selected){ setMsg('tickMsg','Sila pilih tick untuk HP3 dan HP4.', true); return; }
   const btn = document.getElementById('btnSubmitTick');
   btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>Menyimpan...';
-  google.script.run.withSuccessHandler(function(res){
+  apiPost('submitTick', {
+    password: LECTURER_PASSWORD, testName: currentTest, nokp: currentStudent.nokp,
+    hp3Tick: hp3Selected, hp4Tick: hp4Selected
+  }).then(res=>{
     btn.disabled = false; btn.innerText = 'Simpan Markah';
     if(!res.ok){ setMsg('tickMsg', res.message, true); return; }
     setMsg('tickMsg', 'Disimpan. Jumlah Ujian Amali: HP3='+res.hp3Total+', HP4='+res.hp4Total+
       (res.gredAkhir!=='-' ? (' | Gred Akhir: '+res.gredAkhir) : ''), false);
-  }).withFailureHandler(function(err){
+  }).catch(err=>{
     btn.disabled = false; btn.innerText = 'Simpan Markah';
-    setMsg('tickMsg', 'Ralat: '+err.message, true);
-  }).submitTick(LECTURER_PASSWORD, currentTest, currentStudent.nokp, hp3Selected, hp4Selected);
+    setMsg('tickMsg', 'Ralat sambungan: '+err.message, true);
+  });
 }
 </script>
 </body>
