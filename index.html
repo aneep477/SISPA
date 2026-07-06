@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <meta charset="utf-8">
+  <style>
+    :root{
+      --navy:#0f2c52; --navy2:#163a6b; --gold:#c9a227; --green:#1e7a4c;
+      --red:#b0362c; --gray:#f2f4f7; --border:#dde3ec;
+    }
+    *{box-sizing:border-box;}
+    body{
+      font-family:'Segoe UI', Arial, sans-serif; margin:0; background:var(--gray); color:#1b2430;
+    }
+    header{
+      background:linear-gradient(135deg,var(--navy),var(--navy2)); color:#fff; padding:18px 20px;
+      text-align:center;
+    }
+    header h1{margin:0; font-size:18px; letter-spacing:.3px;}
+    header p{margin:4px 0 0; font-size:12px; opacity:.85;}
+    .tabs{display:flex; background:#fff; border-bottom:1px solid var(--border);}
+    .tab{
+      flex:1; text-align:center; padding:14px 8px; font-size:14px; font-weight:600; color:#667;
+      cursor:pointer; border-bottom:3px solid transparent;
+    }
+    .tab.active{color:var(--navy); border-bottom-color:var(--gold);}
+    .screen{display:none; padding:16px; max-width:520px; margin:0 auto;}
+    .screen.active{display:block;}
+    .card{
+      background:#fff; border-radius:14px; padding:18px; margin-bottom:14px;
+      box-shadow:0 1px 3px rgba(0,0,0,.06); border:1px solid var(--border);
+    }
+    .card h2{margin:0 0 12px; font-size:15px; color:var(--navy);}
+    label{display:block; font-size:12px; font-weight:600; color:#556; margin-bottom:5px;}
+    input[type=text], input[type=password], select{
+      width:100%; padding:11px 12px; border:1px solid var(--border); border-radius:8px;
+      font-size:15px; margin-bottom:12px; background:#fbfcfe;
+    }
+    button.primary{
+      width:100%; padding:13px; border:none; border-radius:8px; background:var(--navy);
+      color:#fff; font-size:15px; font-weight:600; cursor:pointer;
+    }
+    button.primary:disabled{opacity:.5;}
+    button.secondary{
+      width:100%; padding:11px; border:1px solid var(--navy); border-radius:8px; background:#fff;
+      color:var(--navy); font-size:14px; font-weight:600; cursor:pointer; margin-top:8px;
+    }
+    .msg{padding:10px 12px; border-radius:8px; font-size:13px; margin-bottom:12px;}
+    .msg.ok{background:#e5f4ec; color:var(--green); border:1px solid #bfe3cf;}
+    .msg.err{background:#fbe9e7; color:var(--red); border:1px solid #f1c3bd;}
+    .photo-preview{
+      width:140px; height:140px; border-radius:12px; object-fit:cover; display:block;
+      margin:0 auto 14px; border:2px solid var(--border); background:#eee;
+    }
+    .student-name{text-align:center; font-weight:700; font-size:16px; color:var(--navy); margin-bottom:2px;}
+    .student-meta{text-align:center; font-size:12px; color:#778; margin-bottom:14px;}
+    .test-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px;}
+    .test-btn{
+      padding:16px 8px; text-align:center; border-radius:10px; border:1px solid var(--border);
+      background:#fff; font-size:13px; font-weight:700; color:var(--navy); cursor:pointer;
+    }
+    .test-btn.selected{background:var(--navy); color:#fff;}
+    .tick-group{margin-bottom:16px;}
+    .tick-group .lbl{font-size:13px; font-weight:700; color:#334; margin-bottom:8px;}
+    .tick-row{display:flex; gap:6px;}
+    .tick-btn{
+      flex:1; padding:14px 0; text-align:center; border-radius:8px; border:1px solid var(--border);
+      background:#fbfcfe; font-size:16px; font-weight:700; color:#556; cursor:pointer;
+    }
+    .tick-btn.selected{background:var(--gold); color:#1b2430; border-color:var(--gold);}
+    select#studentSelect{margin-bottom:14px;}
+    table.dash{width:100%; border-collapse:collapse; font-size:11px;}
+    table.dash th, table.dash td{border:1px solid var(--border); padding:6px 4px; text-align:center;}
+    table.dash th{background:var(--navy); color:#fff; font-weight:600;}
+    table.dash td.name{text-align:left; font-weight:600;}
+    .dot{width:14px; height:14px; border-radius:50%; display:inline-block;}
+    .dot.done{background:var(--green);} .dot.pending{background:#dde3ec;}
+    .spinner{
+      display:inline-block; width:16px; height:16px; border:2px solid #fff; border-top-color:transparent;
+      border-radius:50%; animation:spin .7s linear infinite; vertical-align:middle; margin-right:6px;
+    }
+    @keyframes spin{to{transform:rotate(360deg);}}
+    .hidden{display:none !important;}
+    .link-btn{background:none;border:none;color:var(--navy);font-size:12px;text-decoration:underline;cursor:pointer;padding:0;}
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Sistem Permarkahan Perkhemahan Kor SISPA</h1>
+  <p>IPG Kampus Darulaman &middot; Ujian Amali Kemahiran</p>
+</header>
+
+<div class="tabs">
+  <div class="tab active" id="tabPelajarBtn" onclick="showTab('pelajar')">Pelajar</div>
+  <div class="tab" id="tabPensyarahBtn" onclick="showTab('pensyarah')">Pensyarah</div>
+</div>
+
+<!-- ================= PELAJAR ================= -->
+<div class="screen active" id="screenPelajar">
+  <div class="card" id="pelajarLookupCard">
+    <h2>Muat Naik / Kemaskini Gambar</h2>
+    <div id="pelajarMsg"></div>
+    <label>No. Kad Pengenalan</label>
+    <input type="text" id="pelajarNokp" placeholder="cth: 040730-05-0031" inputmode="numeric">
+    <button class="primary" onclick="lookupStudent()">Cari Nama Saya</button>
+  </div>
+
+  <div class="card hidden" id="pelajarUploadCard">
+    <div id="pelajarMsg2"></div>
+    <img id="photoPreview" class="photo-preview" src="" alt="pratonton">
+    <div class="student-name" id="pelajarNamaLabel"></div>
+    <div class="student-meta" id="pelajarMetaLabel"></div>
+    <input type="file" id="photoInput" accept="image/*" capture="environment" style="margin-bottom:12px;">
+    <button class="primary" id="btnUploadPhoto" onclick="submitPhoto()">Muat Naik Gambar</button>
+    <button class="secondary" onclick="resetPelajar()">Cari Pelajar Lain</button>
+  </div>
+</div>
+
+<!-- ================= PENSYARAH: LOGIN ================= -->
+<div class="screen" id="screenLogin">
+  <div class="card">
+    <h2>Log Masuk Pensyarah</h2>
+    <div id="loginMsg"></div>
+    <label>Kata Laluan</label>
+    <input type="password" id="loginPassword" placeholder="Kata laluan">
+    <button class="primary" onclick="doLogin()">Log Masuk</button>
+  </div>
+</div>
+
+<!-- ================= PENSYARAH: DASHBOARD ================= -->
+<div class="screen" id="screenDashboard">
+  <div class="card">
+    <h2>Papan Pemuka Kemajuan</h2>
+    <div id="dashMsg"></div>
+    <button class="secondary" onclick="loadDashboard()" style="margin-bottom:12px;">Segar Semula</button>
+    <div style="overflow-x:auto;">
+      <table class="dash" id="dashTable"></table>
+    </div>
+  </div>
+  <div class="card">
+    <button class="primary" onclick="goToMarking()">+ Masukkan Markah</button>
+  </div>
+</div>
+
+<!-- ================= PENSYARAH: MARKING ================= -->
+<div class="screen" id="screenMarking">
+  <div class="card">
+    <h2>1. Pilih Ujian</h2>
+    <div class="test-grid" id="testGrid"></div>
+  </div>
+
+  <div class="card" id="studentPickCard">
+    <h2>2. Pilih Pelajar</h2>
+    <select id="studentSelect" onchange="onStudentChange()"><option value="">-- Pilih pelajar --</option></select>
+  </div>
+
+  <div class="card hidden" id="tickCard">
+    <div id="tickMsg"></div>
+    <div class="tick-group">
+      <div class="lbl">HP3 &ndash; Kemahiran Praktikal (markah penuh: <span id="hp3MaxLabel"></span>)</div>
+      <div class="tick-row" id="hp3Row"></div>
+    </div>
+    <div class="tick-group">
+      <div class="lbl">HP4 &ndash; Kemahiran Interpersonal (markah penuh: <span id="hp4MaxLabel"></span>)</div>
+      <div class="tick-row" id="hp4Row"></div>
+    </div>
+    <button class="primary" id="btnSubmitTick" onclick="submitTickForm()">Simpan Markah</button>
+  </div>
+
+  <div class="card">
+    <button class="secondary" onclick="backToDashboard()">&larr; Kembali ke Papan Pemuka</button>
+  </div>
+</div>
+
+<script>
+let LECTURER_PASSWORD = '';
+let currentTest = null;
+let currentStudent = null;
+let hp3Selected = null;
+let hp4Selected = null;
+let studentListCache = [];
+
+function showTab(tab){
+  document.getElementById('tabPelajarBtn').classList.toggle('active', tab==='pelajar');
+  document.getElementById('tabPensyarahBtn').classList.toggle('active', tab==='pensyarah');
+  document.getElementById('screenPelajar').classList.toggle('active', tab==='pelajar');
+  document.getElementById('screenLogin').classList.remove('active');
+  document.getElementById('screenDashboard').classList.remove('active');
+  document.getElementById('screenMarking').classList.remove('active');
+  if(tab==='pensyarah'){
+    if(LECTURER_PASSWORD){ document.getElementById('screenDashboard').classList.add('active'); loadDashboard(); }
+    else { document.getElementById('screenLogin').classList.add('active'); }
+  }
+}
+
+function setMsg(elId, text, isErr){
+  const el = document.getElementById(elId);
+  el.innerHTML = text ? '<div class="msg '+(isErr?'err':'ok')+'">'+text+'</div>' : '';
+}
+
+// ---------- PELAJAR ----------
+function lookupStudent(){
+  const nokp = document.getElementById('pelajarNokp').value.trim();
+  if(!nokp){ setMsg('pelajarMsg','Sila masukkan No. KP.', true); return; }
+  setMsg('pelajarMsg','Mencari...', false);
+  google.script.run.withSuccessHandler(function(res){
+    if(!res.ok){ setMsg('pelajarMsg', res.message, true); return; }
+    setMsg('pelajarMsg','');
+    currentStudent = res.student;
+    document.getElementById('pelajarNamaLabel').innerText = res.student.nama;
+    document.getElementById('pelajarMetaLabel').innerText = res.student.opsyen + ' / ' + res.student.unit;
+    document.getElementById('photoPreview').src = res.student.gambar || 'https://via.placeholder.com/140x140.png?text=Tiada+Gambar';
+    document.getElementById('pelajarLookupCard').classList.add('hidden');
+    document.getElementById('pelajarUploadCard').classList.remove('hidden');
+    setMsg('pelajarMsg2','');
+  }).withFailureHandler(function(err){ setMsg('pelajarMsg', 'Ralat: '+err.message, true); })
+  .lookupStudentForUpload(nokp);
+}
+
+function resetPelajar(){
+  document.getElementById('pelajarUploadCard').classList.add('hidden');
+  document.getElementById('pelajarLookupCard').classList.remove('hidden');
+  document.getElementById('pelajarNokp').value='';
+  currentStudent = null;
+}
+
+function submitPhoto(){
+  const fileInput = document.getElementById('photoInput');
+  if(!fileInput.files || !fileInput.files[0]){ setMsg('pelajarMsg2','Sila pilih gambar dahulu.', true); return; }
+  const file = fileInput.files[0];
+  const reader = new FileReader();
+  reader.onload = function(e){
+    const img = new Image();
+    img.onload = function(){
+      const maxDim = 800;
+      let w = img.width, h = img.height;
+      if(w > h && w > maxDim){ h = h*maxDim/w; w = maxDim; }
+      else if(h > maxDim){ w = w*maxDim/h; h = maxDim; }
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+      document.getElementById('photoPreview').src = dataUrl;
+      const btn = document.getElementById('btnUploadPhoto');
+      btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>Memuat naik...';
+      google.script.run.withSuccessHandler(function(res){
+        btn.disabled = false; btn.innerText = 'Muat Naik Gambar';
+        if(!res.ok){ setMsg('pelajarMsg2', res.message, true); return; }
+        setMsg('pelajarMsg2', res.message, false);
+      }).withFailureHandler(function(err){
+        btn.disabled = false; btn.innerText = 'Muat Naik Gambar';
+        setMsg('pelajarMsg2', 'Ralat: '+err.message, true);
+      }).uploadStudentPhoto(currentStudent.nokp, dataUrl, 'image/jpeg');
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+// ---------- PENSYARAH: LOGIN ----------
+function doLogin(){
+  const pw = document.getElementById('loginPassword').value;
+  setMsg('loginMsg','Menyemak...', false);
+  google.script.run.withSuccessHandler(function(res){
+    if(!res.ok){ setMsg('loginMsg', res.message, true); return; }
+    LECTURER_PASSWORD = pw;
+    document.getElementById('screenLogin').classList.remove('active');
+    document.getElementById('screenDashboard').classList.add('active');
+    loadDashboard();
+  }).withFailureHandler(function(err){ setMsg('loginMsg','Ralat: '+err.message, true); })
+  .loginLecturer(pw);
+}
+
+// ---------- PENSYARAH: DASHBOARD ----------
+function loadDashboard(){
+  setMsg('dashMsg','Memuatkan...', false);
+  google.script.run.withSuccessHandler(function(res){
+    if(!res.ok){ setMsg('dashMsg', res.message, true); return; }
+    setMsg('dashMsg','');
+    studentListCache = res.students;
+    renderDashboard(res.students, res.tests);
+  }).withFailureHandler(function(err){ setMsg('dashMsg','Ralat: '+err.message, true); })
+  .getDashboard(LECTURER_PASSWORD);
+}
+
+function renderDashboard(students, tests){
+  let html = '<tr><th>Pelajar</th>' + tests.map(t=>'<th>'+t+'</th>').join('') + '</tr>';
+  students.forEach(s=>{
+    html += '<tr><td class="name">'+s.nama+'</td>';
+    tests.forEach(t=>{
+      const done = s.status[t];
+      html += '<td><span class="dot '+(done?'done':'pending')+'"></span></td>';
+    });
+    html += '</tr>';
+  });
+  document.getElementById('dashTable').innerHTML = html;
+}
+
+// ---------- PENSYARAH: MARKING ----------
+const TEST_LABELS = {
+  'Pertolongan Cemas':'Pertolongan\\nCemas','Melawan Kebakaran':'Melawan\\nKebakaran',
+  'Kawad Kaki':'Kawad Kaki','Istiadat':'Istiadat'
+};
+const TEST_MAX = {
+  'Pertolongan Cemas':{hp3:15,hp4:10}, 'Melawan Kebakaran':{hp3:5,hp4:5},
+  'Kawad Kaki':{hp3:10,hp4:5}, 'Istiadat':{hp3:5,hp4:5}
+};
+
+function goToMarking(){
+  document.getElementById('screenDashboard').classList.remove('active');
+  document.getElementById('screenMarking').classList.add('active');
+  buildTestGrid();
+  buildStudentSelect();
+  document.getElementById('tickCard').classList.add('hidden');
+}
+function backToDashboard(){
+  document.getElementById('screenMarking').classList.remove('active');
+  document.getElementById('screenDashboard').classList.add('active');
+  loadDashboard();
+}
+
+function buildTestGrid(){
+  const grid = document.getElementById('testGrid');
+  grid.innerHTML = '';
+  Object.keys(TEST_MAX).forEach(t=>{
+    const div = document.createElement('div');
+    div.className = 'test-btn' + (currentTest===t?' selected':'');
+    div.innerText = t;
+    div.onclick = function(){ currentTest = t; buildTestGrid(); if(currentStudent) onStudentChange(); };
+    grid.appendChild(div);
+  });
+}
+
+function buildStudentSelect(){
+  const sel = document.getElementById('studentSelect');
+  sel.innerHTML = '<option value="">-- Pilih pelajar --</option>';
+  studentListCache.forEach(s=>{
+    const opt = document.createElement('option');
+    opt.value = s.nokp; opt.innerText = s.nama + ' (' + s.unit + ')';
+    sel.appendChild(opt);
+  });
+}
+
+function onStudentChange(){
+  const nokp = document.getElementById('studentSelect').value;
+  if(!nokp || !currentTest){ document.getElementById('tickCard').classList.add('hidden'); return; }
+  currentStudent = studentListCache.find(s=>s.nokp===nokp);
+  hp3Selected = null; hp4Selected = null;
+  document.getElementById('hp3MaxLabel').innerText = TEST_MAX[currentTest].hp3;
+  document.getElementById('hp4MaxLabel').innerText = TEST_MAX[currentTest].hp4;
+  buildTickRow('hp3Row','hp3');
+  buildTickRow('hp4Row','hp4');
+  setMsg('tickMsg','');
+  document.getElementById('tickCard').classList.remove('hidden');
+
+  google.script.run.withSuccessHandler(function(res){
+    if(res.ok){
+      if(res.hp3){ hp3Selected = res.hp3; buildTickRow('hp3Row','hp3'); }
+      if(res.hp4){ hp4Selected = res.hp4; buildTickRow('hp4Row','hp4'); }
+    }
+  }).getCurrentTick(LECTURER_PASSWORD, currentTest, nokp);
+}
+
+function buildTickRow(elId, which){
+  const row = document.getElementById(elId);
+  row.innerHTML = '';
+  [5,4,3,2,1].forEach(v=>{
+    const btn = document.createElement('div');
+    const selectedVal = which==='hp3' ? hp3Selected : hp4Selected;
+    btn.className = 'tick-btn' + (selectedVal===v?' selected':'');
+    btn.innerText = v;
+    btn.onclick = function(){
+      if(which==='hp3') hp3Selected = v; else hp4Selected = v;
+      buildTickRow('hp3Row','hp3'); buildTickRow('hp4Row','hp4');
+    };
+    row.appendChild(btn);
+  });
+}
+
+function submitTickForm(){
+  if(!hp3Selected || !hp4Selected){ setMsg('tickMsg','Sila pilih tick untuk HP3 dan HP4.', true); return; }
+  const btn = document.getElementById('btnSubmitTick');
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>Menyimpan...';
+  google.script.run.withSuccessHandler(function(res){
+    btn.disabled = false; btn.innerText = 'Simpan Markah';
+    if(!res.ok){ setMsg('tickMsg', res.message, true); return; }
+    setMsg('tickMsg', 'Disimpan. Jumlah Ujian Amali: HP3='+res.hp3Total+', HP4='+res.hp4Total+
+      (res.gredAkhir!=='-' ? (' | Gred Akhir: '+res.gredAkhir) : ''), false);
+  }).withFailureHandler(function(err){
+    btn.disabled = false; btn.innerText = 'Simpan Markah';
+    setMsg('tickMsg', 'Ralat: '+err.message, true);
+  }).submitTick(LECTURER_PASSWORD, currentTest, currentStudent.nokp, hp3Selected, hp4Selected);
+}
+</script>
+</body>
+</html>
